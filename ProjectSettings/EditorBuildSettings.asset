@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/GamePassScene.unity
+    guid: a9a3e4eea453c4108a57ef7f117d400d
   m_configObjects: {}
