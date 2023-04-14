@@ -13,11 +13,16 @@ namespace PlatformShoot
         private float mGroundMoveSpeed = 5f;
         private float mJumpForce = 12f;
         private bool mJumpInput;
+        private MainPanel _mainPanel;
+        private GameObject _gamePass;
 
         // Start is called before the first frame update
         private void Start()
         {
             mRig = GetComponent<Rigidbody2D>();
+            _mainPanel = GameObject.Find("MainPanel").GetComponent<MainPanel>();
+            _gamePass = GameObject.Find("GamePass");
+            _gamePass.SetActive(false);
         }
 
         private void Update()
@@ -25,7 +30,8 @@ namespace PlatformShoot
             if (Input.GetKeyDown(KeyCode.J))
             {
                 var bullet = Resources.Load<GameObject>("Bullet");
-                Instantiate(bullet, transform.position ,Quaternion.identity);
+                bullet = Instantiate(bullet, transform.position ,Quaternion.identity);
+                bullet.GetComponent<Bullet>().GetGamePass(_gamePass);
             }
             if (Input.GetKeyDown(KeyCode.K))
             {
@@ -49,6 +55,12 @@ namespace PlatformShoot
             if (col.gameObject.CompareTag("Door"))
             {
                 SceneManager.LoadScene("GamePassScene");
+            }
+
+            if (col.gameObject.CompareTag("Reward"))
+            {
+                _mainPanel.UpdateScoreText();
+                Destroy(col.gameObject);
             }
         }
     }
