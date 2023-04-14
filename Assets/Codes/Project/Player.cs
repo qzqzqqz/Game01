@@ -15,6 +15,7 @@ namespace PlatformShoot
         private bool mJumpInput;
         private MainPanel _mainPanel;
         private GameObject _gamePass;
+        private float _mFaceDir = 1;
 
         // Start is called before the first frame update
         private void Start()
@@ -29,13 +30,21 @@ namespace PlatformShoot
         {
             if (Input.GetKeyDown(KeyCode.J))
             {
-                var bullet = Resources.Load<GameObject>("Bullet");
-                bullet = Instantiate(bullet, transform.position ,Quaternion.identity);
-                bullet.GetComponent<Bullet>().GetGamePass(_gamePass);
+                var obj = Resources.Load<GameObject>("Bullet");
+                obj = Instantiate(obj, transform.position ,Quaternion.identity);
+                var bullet = obj.GetComponent<Bullet>();
+                bullet.GetGamePass(_gamePass);
+                bullet.InitDir(_mFaceDir);
             }
             if (Input.GetKeyDown(KeyCode.K))
             {
                 mJumpInput = true;
+            }
+            //判断角色转向
+            if ((Input.GetAxisRaw("Horizontal") != 0) && (Input.GetAxisRaw("Horizontal") != _mFaceDir))
+            {
+                _mFaceDir = -_mFaceDir;
+                transform.Rotate(0, 180, 0);
             }
         }
 
