@@ -30,7 +30,7 @@ namespace PlatformShoot
         {
             if (Input.GetKeyDown(KeyCode.J))
             {
-                var obj = Resources.Load<GameObject>("Bullet");
+                var obj = Resources.Load<GameObject>("Item/Bullet");
                 obj = Instantiate(obj, transform.position ,Quaternion.identity);
                 var bullet = obj.GetComponent<Bullet>();
                 bullet.GetGamePass(_gamePass);
