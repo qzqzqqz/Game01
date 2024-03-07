@@ -1,19 +1,19 @@
-using System;
+                                                                                                                                                                                                    using System;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using QFramework;
 namespace PlatformShoot
 {
-    public class Bullet : MonoBehaviour
+    public class Bullet : MonoBehaviour,IController
     {
         private LayerMask _layerMask;
-        private GameObject _gamePass;
+        // private GameObject _gamePass;
         private float _dir;
 
-        public void GetGamePass(GameObject gamePass)
-        {
-            _gamePass = gamePass;
-        }
+        // public void GetGamePass(GameObject gamePass)
+        // {
+        //     _gamePass = gamePass;
+        // }
         
         //初始化方向
         public void InitDir(float dir)
@@ -42,13 +42,15 @@ namespace PlatformShoot
                 if (col.CompareTag("Trigger"))
                 {
                     Destroy(col.gameObject);
-                    if (_gamePass is not null)
-                    {
-                        _gamePass.SetActive(true);
-                    }
+                    this.SendCommand<ShowPassDoorCommand>();
                 }
                 Destroy(gameObject);
             }
+        }
+
+        IArchitecture IBelongToArchitecture.GetArchitecture()
+        {
+            return PlatformShootGame.Interface;
         }
     }
 }
