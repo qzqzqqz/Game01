@@ -7,15 +7,19 @@ namespace PlatformShoot
     public class Player : MonoBehaviour, IController
     {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
         private Rigidbody2D mRig;
-        private float mGroundMoveSpeed = 5f;
-        private float mJumpForce = 12f;
-        private bool mJumpInput;
+        private BoxCollider2D _mCollBox;
+        private LayerMask _mGroundLayerMask;
+        private float _mGroundMoveSpeed = 5f;
+        private float _mJumpForce = 12f;
+        private bool _mJumpInput;
         private float _mFaceDir = 1;
 
         // Start is called before the first frame update
         private void Start()
         {
             mRig = GetComponent<Rigidbody2D>();
+            _mCollBox = GetComponentInChildren<BoxCollider2D>();
+            _mGroundLayerMask = LayerMask.GetMask("Ground");
             this.GetSystem<ICameraSystem>().SetTarget(transform);
 
             // _mainPanel = GameObject.Find("MainPanel").GetComponent<MainPanel>();
@@ -35,7 +39,10 @@ namespace PlatformShoot
             }
             if (Input.GetKeyDown(KeyCode.K))
             {
-                mJumpInput = true;
+                if (Physics2D.OverlapBox(transform.position + Vector3.down * _mCollBox.size.y * 0.5f, new Vector2(_mCollBox.size.x*0.8f,0.1f),0,_mGroundLayerMask))
+                {
+                    _mJumpInput = true;
+                }
             }
             //判断角色转向
             if ((Input.GetAxisRaw("Horizontal") != 0) && (Input.GetAxisRaw("Horizontal") != _mFaceDir))
@@ -45,15 +52,21 @@ namespace PlatformShoot
             }
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(transform.position + _mCollBox.size.y * Vector3.down * 0.5f, new Vector2(_mCollBox.size.x*0.8f,0.1f));
+        }
+
         // Update is called once per frame
         private void FixedUpdate()
         {
-            if (mJumpInput)
+            if (_mJumpInput)
             {
-                mJumpInput = false;
-                mRig.velocity = new Vector2(mRig.velocity.x, mJumpForce);
+                _mJumpInput = false;
+                mRig.velocity = new Vector2(mRig.velocity.x, _mJumpForce);
             }
-            mRig.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * mGroundMoveSpeed, mRig.velocity.y);
+            mRig.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * _mGroundMoveSpeed, mRig.velocity.y);
         }
 
         private void LateUpdate()
