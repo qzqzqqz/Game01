@@ -43,6 +43,10 @@ namespace PlatformShoot
                 {
                     Destroy(col.gameObject);
                     this.SendCommand<ShowPassDoorCommand>();
+                    AudioPlay.Instance.PlaySound("碰铃撞击");
+                }else
+                {
+                    AudioPlay.Instance.PlaySound("清脆超高频击中");
                 }
                 Destroy(gameObject);
             }

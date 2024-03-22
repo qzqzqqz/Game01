@@ -6,14 +6,13 @@ namespace PlatformShoot
     public interface ICameraSystem : ISystem
     {
         void SetTarget(Transform transform);
-        void Update();
     }
     public class CameraSystem: AbstractSystem,ICameraSystem
     {
         private Transform _mTarget;
         protected override void OnInit()
         {
-            
+            PublicMono.Instance.OnLateUpdate += Update;
         }
 
         public void SetTarget(Transform target)
@@ -21,9 +20,11 @@ namespace PlatformShoot
             _mTarget = target;
         }
 
-        public void Update()
+        private void Update()
         {
-            Camera.main.transform.localPosition = new Vector3(_mTarget.position.x, _mTarget.position.y, -10);
+            if (_mTarget == null) return;
+            var mTargetPosition = _mTarget.position;
+            Camera.main.transform.localPosition = new Vector3(mTargetPosition.x, mTargetPosition.y, -10);
         }
     }
 }

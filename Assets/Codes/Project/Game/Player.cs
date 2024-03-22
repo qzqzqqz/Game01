@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using QFramework;
 
@@ -15,6 +14,7 @@ namespace PlatformShoot
         private float _mJumpForce = 12f;
         private bool _mJumpInput;
         private float _mFaceDir = 1;
+        private bool _isJumping = true;
 
         // Start is called before the first frame update
         private void Start()
@@ -33,19 +33,35 @@ namespace PlatformShoot
         {
             if (Input.GetKeyDown(KeyCode.J))
             {
+                //播放攻击音效
+                AudioPlay.Instance.PlaySound("竖琴");
+                //生成子弹
                 var obj = Resources.Load<GameObject>("Item/Bullet");
                 obj = Instantiate(obj, transform.position ,Quaternion.identity);
                 var bullet = obj.GetComponent<Bullet>();
                 // bullet.GetGamePass(_gamePass);
                 bullet.InitDir(_mFaceDir);
             }
-            if (Input.GetKeyDown(KeyCode.K))
+            //根据相交盒判定角色是否处于地面
+            var ground = Physics2D.OverlapBox(transform.position + Vector3.down * _mCollBox.size.y * 0.5f, new Vector2(_mCollBox.size.x*0.8f,0.1f),0,_mGroundLayerMask);
+            if (ground)
             {
-                if (Physics2D.OverlapBox(transform.position + Vector3.down * _mCollBox.size.y * 0.5f, new Vector2(_mCollBox.size.x*0.8f,0.1f),0,_mGroundLayerMask))
+                if (Input.GetKeyDown(KeyCode.K))
                 {
+                    //播放跳跃的声音
+                    AudioPlay.Instance.PlaySound("跳跃");
                     _mJumpInput = true;
+                    _isJumping = true;
+                }
+
+                if (_isJumping)
+                {
+                    //播放落地声音
+                    AudioPlay.Instance.PlaySound("落地2");
+                    _isJumping = false;
                 }
             }
+
             //判断角色转向
             float h = Input.GetAxisRaw("Horizontal");
             if ((h != 0) && (h != _mFaceDir))
@@ -87,11 +103,6 @@ namespace PlatformShoot
             float h = Input.GetAxisRaw("Horizontal");
             SmoothMove(h);
             // mRig.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * _mGroundMoveSpeed, mRig.velocity.y);
-        }
-
-        private void LateUpdate()
-        {
-            this.GetSystem<ICameraSystem>().Update();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
