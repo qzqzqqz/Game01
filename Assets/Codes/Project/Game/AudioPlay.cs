@@ -6,36 +6,38 @@ namespace PlatformShoot
 {
     public class AudioPlay: MonoBehaviour
     {
+        //播放列表
         private List<AudioSource> _mPlayingList;
+        //对外暴露一个静态实例
         public static AudioPlay Instance;
 
         private void Awake() => Instance = this;
 
+        //在start中初始化播放列表 
         private void Start()
         {
             _mPlayingList = new List<AudioSource>();
-            GameObject.DontDestroyOnLoad(gameObject);
+            //在start中做一个转换保护，这样过场景时不会被切断
+            DontDestroyOnLoad(gameObject);
         }
         
         public void PlaySound(string name)
         {
             var source = gameObject.AddComponent<AudioSource>();
-            source.clip = Resources.Load<AudioClip>(""+name);
+            source.clip = Resources.Load<AudioClip>("Audio/Sound/"+name);
             source.Play();
             _mPlayingList.Add(source);
         }
 
         public void Update()
         {
-            //todo: 是否可以用这个表达式替换for循环？
-            _mPlayingList.RemoveAll(source => !source.isPlaying);
-            // for (int i = _mPlayingList.Count - 1; i > 0; i--)
-            // {
-            //     var source = _mPlayingList[i];
-            //     if (source.isPlaying) continue;
-            //     _mPlayingList.RemoveAt(i);
-            //     Destroy(source);
-            // }
+            for (int i = _mPlayingList.Count - 1; i > 0; i--)
+            {
+                var source = _mPlayingList[i];
+                if (source.isPlaying) continue;
+                _mPlayingList.RemoveAt(i);
+                Destroy(source);
+            }
         }
     }
 }

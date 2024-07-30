@@ -12,7 +12,7 @@ namespace PlatformShoot
         private void Awake()
         {
             Instance = this;
-            GameObject.DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject);
         }
 
         public event Action OnUpdate;
