@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PlatformShoot
+namespace QFramework
 {
     public class PublicMono : MonoBehaviour
     {
@@ -12,7 +12,7 @@ namespace PlatformShoot
         private void Awake()
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            GameObject.DontDestroyOnLoad(gameObject);
         }
 
         public event Action OnUpdate;

@@ -53,11 +53,11 @@ namespace PlatformShoot
                 //播放攻击音效
                 AudioPlay.Instance.PlaySound("竖琴");
                 //生成子弹
-                var obj = Resources.Load<GameObject>("Item/Bullet");
-                obj = Instantiate(obj, transform.position ,Quaternion.identity);
-                var bullet = obj.GetComponent<Bullet>();
-                // bullet.GetGamePass(_gamePass);
-                bullet.InitDir(_mFaceDir);
+                ResHelper.AsyncLoad<GameObject>("Item/Bullet", (obj) =>
+                {
+                    obj = Resources.Load<GameObject>("Item/Bullet");
+                    Instantiate(obj, transform.position ,Quaternion.identity).GetComponent<Bullet>().InitDir(_mFaceDir);
+                });
             }
             //根据相交盒判定角色是否处于地面
             var ground = Physics2D.OverlapBox(transform.position + Vector3.down * _mCollBox.size.y * 0.5f, new Vector2(_mCollBox.size.x*0.8f,0.1f),0,_mGroundLayerMask);
